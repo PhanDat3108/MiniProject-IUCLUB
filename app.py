@@ -12,12 +12,17 @@ def register():
         password = request.form["password"]
         full_name = request.form["full_name"]
         email = request.form["email"]
-        role = request.form["role"]
-        add_user(username, password, full_name, email, role)
+
+        add_user(username, password, full_name, email)
+
         flash("Đăng ký thành công!", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 #làm 1 cái route login, lấy thông tin từ ô nhập login.html
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    
+    return render_template("login.html")
 
 #làm 1 cái route tới trang dashboard.html sau khi đã đăng nhâp
 
