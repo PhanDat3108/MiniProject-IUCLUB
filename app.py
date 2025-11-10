@@ -26,6 +26,7 @@ def login():
 
 #làm 1 cái route tới trang dashboard.html sau khi đã đăng nhâp
 
+
 @app.route("/")
 def home():
     return render_template("home.html")
