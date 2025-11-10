@@ -6,7 +6,7 @@ body{
     background: #e5eef3;
 }
 .form-container{
-    width: 400px;
+    width: 450px;
     padding: 30px 40px;
     background: #4070f4;
     border-radius: 10px;
@@ -20,22 +20,24 @@ body{
     color: #fff;
 }
 
-.form-container form{
+form{
     display: flex;
     flex-direction: column;
     gap: 10px   ;
     margin-top: 20px;
+    height: 400px;
+    width: 450px;
 }
-form input{
-    height: 30px;
-    outline: none;
-    border: none;
-    padding: 0 15px;
-    font-size: 16px;
-    font-weight: 400;
-    color: #333;
-    border-radius: 5px;
-
+form input ,button{
+  height: 60px;
+  outline: none;
+  border: none;
+  padding: 0 15px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+  border-radius: 8px;
+  background: #fff;
 }
 h2{
     color: #faecec;
@@ -43,3 +45,6 @@ h2{
 }
 
 
+a{
+    text-decoration: none;
+    color:black}
