@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sửa Người dùng</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Admin</h2>
+        <ul>
+            <li>
+                <a href="{{ url_for('manage_users') }}" class="active">Quản lý User</a>
+            </li>
+            <li>
+                <a href="#">Quản lý Bài viết</a>
+            </li>
+        </ul>
+        <hr>
+        <a href="{{ url_for('dashboard') }}">Về Dashboard</a>
+    </div>
+
+    <div class="main-content">
+        
+        <h1>Sửa thông tin: {{ user.username }}</h1>
+        <p>(Bạn không thể sửa tên đăng nhập)</p>
+
+        <form action="" method="POST">
+            <div>
+                <label for="full_name">Họ và tên:</label>
+                <input 
+                    type="text" 
+                    id="full_name" 
+                    name="full_name" 
+                    value="{{ user.full_name }}" 
+                    required>
+            </div>
+            <br>
+            <div>
+                <label for="email">Email:</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    value="{{ user.email }}" 
+                    required>
+            </div>
+            <br>
+            <div>
+                <label for="role">Vai trò:</label>
+                <select id="role" name="role">
+                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>
+                        User
+                    </option>
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>
+                        Admin
+                    </option>
+                </select>
+            </div>
+            <br>
+            <button type="submit">Lưu thay đổi</button>
+        </form>
+    </div>
+
+</body>
+</html>
