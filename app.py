@@ -43,6 +43,8 @@ def login():
 
 #làm 1 cái route tới trang dashboard.html sau khi đã đăng nhâp
 
+
+@app.route("/")
 @app.route("/dashboard")
 def dashboard():
     if "username" not in session:
