@@ -1,4 +1,4 @@
-#Định nghĩa model logic
+# Định nghĩa model logic
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -16,7 +16,10 @@ class User:
     def to_dict(self):
         return self.__dict__
 
-    #làm 1 def checkpassword tận dụng check_password_hash anh đã import trên kia
+    # làm 1 def checkpassword tận dụng check_password_hash anh đã import trên kia 
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 
    
