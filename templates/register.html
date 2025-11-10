@@ -1,34 +1,72 @@
-
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
-    <link rel="stylesheet" href="register.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="../static/css/app.css" />
+  </head>
+  <body>
+    <section class="wrapper">
+      <div class="form signup">
+        <header>Đăng ký</header>
+        <form method="POST">
+          <input
+            type="text"
+            name="full_name"
+            placeholder="Họ và tên"
+            required
+          /><br />
+          <input
+            type="text"
+            name="username"
+            placeholder="Tên đăng nhập"
+            required
+          /><br />
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu"
+            required
+          />
+          <br />
+          <input type="text" name="email" placeholder="Email" required /><br />
+          <div class="checkbox">
+            <input type="checkbox" id="signupCheck" />
+            <label for="signupCheck">Tôi đồng ý tất cả các điều khoản</label>
+          </div>
+          <input type="submit" value="Đăng ký" />
+        </form>
+      </div>
 
-<body>
-        <div class="form-container">
-            <h2>Đăng ký tài khoản</h2>
-            <form action="" method="POST">
-            <form action="#">
-        <label for="username">Tên đăng nhập</label>
-        <input type="text" id="username" name="username" required>
+      <div class="form login">
+        <header>Đăng nhập</header>
+        <form method="POST">
+          <input type="text" name="email" placeholder="Email" required /><br />
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu"
+            required
+          /><br />
+          <a href="#">Quên mật khẩu?</a>
+          <input type="submit" value="Đăng nhập" />
+        </form>
+      </div>
 
-        <label for="password">Mật khẩu</label>
-        <input type="password" id="password" name="password" required>
+      <script>
+        const wrapper = document.querySelector(".wrapper"),
+          signupHeader = document.querySelector(".signup header"),
+          loginHeader = document.querySelector(".login header");
 
-        <label for="full_name">Họ và tên</label>
-        <input type="text" id="full_name" name="full_name" required>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-
-        <button type="submit">Đăng ký</button>
-            </form>
-            
-        </div>
+        loginHeader.addEventListener("click", () => {
+          wrapper.classList.add("active");
+        });
+        signupHeader.addEventListener("click", () => {
+          wrapper.classList.remove("active");
+        });
+      </script>
     </section>
-</body>
+  </body>
 </html>
