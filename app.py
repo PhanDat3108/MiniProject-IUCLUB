@@ -19,7 +19,6 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-# Đảm bảo thư mục upload tồn tại
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -37,12 +36,11 @@ def admin_required(f):
 
         if not user or user.role != "admin":
             flash("Bạn không có quyền truy cập trang này!", "danger")
-            return redirect(url_for("home")) # Sửa: Chuyển về home nếu không phải admin
+            return redirect(url_for("home"))
 
         return f(*args, **kwargs)
     return decorated_function
 
-# --- Tự động gửi user vào template (Đã có) ---
 @app.context_processor
 def inject_user():
     if "username" in session:
@@ -51,12 +49,10 @@ def inject_user():
     return dict(current_user=None)
 
 
-# --- ROUTE ---
 
 @app.route("/")
 def home():
     """Trang chủ, gắn với route '/' """
-    # SỬA LẠI: Lấy và gửi posts ra template
     posts = get_all_posts()
     return render_template("home.html", posts=posts)
 
@@ -163,7 +159,7 @@ def add_post_route():
     flash("Đăng bài thành công!", "success")
     
     return redirect(url_for("home"))
-@app.route('/delete_user/<string:username_to_delete>') 
+@app.route('/delete_user/<string:username_to_delete>', methods=["POST"])
 @admin_required
 def delete_user(username_to_delete):
     """Xoá user, gắn với route '/delete_user/<string:username_to_delete>' """
@@ -182,5 +178,3 @@ def delete_user(username_to_delete):
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
-    
