@@ -44,12 +44,12 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
                     <td>{{ user.last_login }}</td>
-                    <td>
-                        <form action="{{ url_for('delete_user', username=user.username) }}" method="POST" style="margin:0;">
-                        <button type="submit" class="delete-button" 
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng {{ user.username }}?');">
-                            Xóa
-                        </button>
+                    <td style="text-align: center;">
+                        <form action="{{ url_for('delete_user', username_to_delete=user.username) }}" 
+                        method="POST" 
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xoá người dùng {{ user.username }} không?');">
+    
+                        <button type="submit" class="delete-button">Xoá</button>
                         </form>
                             
                     </td>
