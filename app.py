@@ -2,18 +2,30 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import os
 from datetime import datetime
 from functools import wraps
+from werkzeug.utils import secure_filename
 
 from utils.user_utils import (
     add_user, 
     verify_user_credentials, 
     get_user_by_username, 
-    get_all_users
+    get_all_users,
 )
+from utils.post_utils import add_post, get_all_posts
 from storage import users_collection
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+# Đảm bảo thư mục upload tồn tại
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -25,20 +37,43 @@ def admin_required(f):
 
         if not user or user.role != "admin":
             flash("Bạn không có quyền truy cập trang này!", "danger")
-            return redirect(url_for("dashboard")) 
+            return redirect(url_for("home")) # Sửa: Chuyển về home nếu không phải admin
 
         return f(*args, **kwargs)
     return decorated_function
 
+# --- Tự động gửi user vào template (Đã có) ---
+@app.context_processor
+def inject_user():
+    if "username" in session:
+        user = get_user_by_username(session["username"])
+        return dict(current_user=user)
+    return dict(current_user=None)
+
+
+# --- ROUTE ---
+
+@app.route("/")
+def home():
+    """Trang chủ, gắn với route '/' """
+    # SỬA LẠI: Lấy và gửi posts ra template
+    posts = get_all_posts()
+    return render_template("home.html", posts=posts)
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if "username" in session:
+        return redirect(url_for("home"))
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         full_name = request.form["full_name"]
         email = request.form["email"]
+        
+        if get_user_by_username(username):
+             flash("Tên đăng nhập đã tồn tại.", "danger")
+             return redirect(url_for("register"))
 
         add_user(username, password, full_name, email)
 
@@ -49,6 +84,8 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if "username" in session:
+        return redirect(url_for("home"))
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
@@ -66,18 +103,19 @@ def login():
                 if user.role == "admin":
                     return redirect(url_for("manage_users"))
                 else:
-                    return redirect(url_for("dashboard")) 
+                    return redirect(url_for("home")) 
             else:
                 flash("Không tìm thấy người dùng!", "danger")
         else:
             flash ("Sai tên đăng nhập hoặc mật khẩu!", "danger")
     return render_template("login.html")
 
-@app.route("/")
-def home():
-    """Trang chủ, gắn với route '/' """
-    return render_template("home.html")
-
+@app.route("/logout")
+def logout():
+    """Đăng xuất người dùng."""
+    session.pop("username", None)
+    flash("Bạn đã đăng xuất.", "info")
+    return redirect(url_for("home"))
 
 @app.route("/dashboard")
 def dashboard():
@@ -95,6 +133,36 @@ def manage_users():
     """Trang admin, gắn với route '/admin' """
     users_list = get_all_users()
     return render_template("admin.html", users=users_list)
+
+
+
+
+@app.route("/add_post", methods=["POST"])
+def add_post_route():
+    """Xử lý việc đăng bài mới."""
+    if "username" not in session:
+        flash("Bạn cần đăng nhập để đăng bài.", "warning")
+        return redirect(url_for("login"))
+
+    user = get_user_by_username(session["username"])
+    caption = request.form.get("caption", "")
+    image_file = request.files.get("image")
+    image_url = None
+
+    if image_file and image_file.filename != '' and allowed_file(image_file.filename):
+        filename = secure_filename(image_file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image_file.save(file_path)
+        image_url = url_for('static', filename=f'uploads/{filename}')
+    
+    if not caption and not image_url:
+        flash("Bạn phải nhập nội dung hoặc tải lên ảnh.", "warning")
+        return redirect(url_for("home"))
+
+    add_post(user.username, user.full_name, caption, image_url)
+    flash("Đăng bài thành công!", "success")
+    
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
