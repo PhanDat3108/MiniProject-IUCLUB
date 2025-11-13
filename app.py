@@ -163,7 +163,24 @@ def add_post_route():
     flash("Đăng bài thành công!", "success")
     
     return redirect(url_for("home"))
+@app.route('/delete_user/<string:username_to_delete>') 
+@admin_required
+def delete_user(username_to_delete):
+    """Xoá user, gắn với route '/delete_user/<string:username_to_delete>' """
+    if username_to_delete == session.get("username"):
+        flash('Bạn không thể tự xoá chính mình.', 'danger')
+        return redirect(url_for('manage_users'))
+
+    try:
+        users_collection.delete_one({"username": username_to_delete})
+        flash(f'Đã xoá thành công người dùng {username_to_delete}.', 'success')
+    except Exception as e:
+        flash(f'Có lỗi xảy ra khi xoá: {e}', 'danger')
+    
+    return redirect(url_for('manage_users'))
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+    
