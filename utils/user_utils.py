@@ -11,13 +11,12 @@ def get_user_by_username(username):
     if data:
         user = User(
             username=data["username"],
-            password=data["password_hash"],  # sẽ thay thế ngay dưới
+            password=data["password_hash"], 
             full_name=data["full_name"],
             email=data["email"],
             role=data.get("role", "user"),
             active=data.get("active", True)
         )
-        # Gán lại password_hash để không tạo hash mới khi khởi tạo
         user.password_hash = data["password_hash"]
         user.created_at = data.get("created_at")
         user.last_login = data.get("last_login")
@@ -28,7 +27,7 @@ def get_user_by_username(username):
 def verify_user_credentials(username, password):
     user = get_user_by_username(username)
     if not user:
-        return False  # không tồn tại user
+        return False 
     
     return user.check_password(password)
 #lấy tt user
