@@ -7,4 +7,4 @@ MONGO_URI = "mongodb+srv://ibclubblog:iuclubblog123@iuclub.oe133jj.mongodb.net/?
 client = MongoClient(MONGO_URI)
 db = client.get_database("blogDB")
 users_collection = db.users
-
+posts_collection = db.posts

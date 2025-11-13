@@ -1,6 +1,46 @@
-<p>trang chủ test</p>
-<a href="login">link test đăng nhập
-</a>
+{% extends "layout.html" %}
 
-<br>
-<a href="register">link đăng kí</a>
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+    
+    {% if current_user %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    
+    <div class="post-form">
+        <h3>Đăng bài viết mới, {{ current_user.full_name }}!</h3>
+        <form action="{{ url_for('add_post_route') }}" method="POST" enctype="multipart/form-data">
+            <div>
+                <textarea id="caption" name="caption" rows="4" placeholder="Bạn đang nghĩ gì?"></textarea>
+            </div>
+            <div>
+                <label for="image">Tải lên ảnh (Tùy chọn):</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+            <br>
+            <button type="submit">Đăng bài</button>
+        </form>
+    </div>
+    <hr>
+    {% endif %}
+
+    <h2>Bài đăng mới nhất</h2>
+    <div class="post-list">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="post-item">
+                    <strong class="post-author">@{{ post.full_name }}</strong>
+                    
+                    <p class="post-caption">{{ post.caption }}</p>
+                    
+                    {% if post.image_url %}
+                        <img src="{{ post.image_url }}" alt="Post Image">
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Chưa có bài đăng nào. Hãy là người đầu tiên!</p>
+        {% endif %}
+    </div>
+
+{% endblock %}
