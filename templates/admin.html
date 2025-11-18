@@ -2,9 +2,7 @@
 <html>
 <head>
     <title>Trang Admin</title>
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-    
 </head>
 <body>
 
@@ -12,14 +10,14 @@
         <h2>Admin</h2>
         <ul>
             <li>
-                <a href="{{ url_for('manage_users') }}" class="active">Quản lý User</a>
+                <a href="{{ url_for('user.manage_users') }}" class="active">Quản lý User</a>
             </li>
             <li>
-                <a href="#">Quản lý Bài viết</a>
+                <a href="{{ url_for('post.manage_posts') }}">Quản lý Bài viết</a>
             </li>
         </ul>
         <hr>
-        <a href="{{ url_for('dashboard') }}">Về Dashboard</a>
+        <a href="{{ url_for('post.home') }}">Home</a>
     </div>
 
     <div class="main-content">
@@ -45,7 +43,7 @@
                     <td>{{ user.role }}</td>
                     <td>{{ user.last_login }}</td>
                     <td style="text-align: center;">
-                        <form action="{{ url_for('delete_user', username_to_delete=user.username) }}" 
+                        <form action="{{ url_for('user.delete_user', username_to_delete=user.username) }}" 
                         method="POST" 
                         onsubmit="return confirm('Bạn có chắc chắn muốn xoá người dùng {{ user.username }} không?');">
     

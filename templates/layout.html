@@ -8,19 +8,19 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
+            <a href="{{ url_for('post.home') }}" class="nav-logo">
                 <img src="{{ url_for('static', filename='img/poster.png') }}" alt="IU Club Logo">
             </a>
             <div class="nav-links">
                 {% if current_user %}
                     <span class="nav-hello">Xin chào, {{ current_user.full_name }}!</span>
                     {% if current_user.role == 'admin' %}
-                        <a href="{{ url_for('manage_users') }}">Admin</a>
+                        <a href="{{ url_for('user.manage_users') }}">Admin</a>
                     {% endif %}
-                    <a href="{{ url_for('logout') }}">Đăng xuất</a>
+                    <a href="{{ url_for('auth.logout') }}">Đăng xuất</a>
                 {% else %}
-                    <a href="{{ url_for('login') }}">Đăng nhập</a>
-                    <a href="{{ url_for('register') }}">Đăng ký</a>
+                    <a href="{{ url_for('auth.login') }}">Đăng nhập</a>
+                    <a href="{{ url_for('auth.register') }}">Đăng ký</a>
                 {% endif %}
             </div>
         </div>
