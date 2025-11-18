@@ -1,27 +1,25 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
+    <title>Đăng nhập</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
 </head>
 
 <body>
         <div class="form-container">
             <h2>Đăng nhập</h2>
-            <form action="{{ url_for('login') }}" method="POST">
+            <form action="{{ url_for('auth.login') }}" method="POST">
                 <br>
-        <input type="text" id="username" name="username" required placeholder="Họ Tên">
-<br>
-        <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
-        <br>
-        <a href="register">Bạn chưa có tài khoản ?</a>
- <br>
-        <button type="submit">Đăng nhập</button>
+                <input type="text" id="username" name="username" required placeholder="Tên đăng nhập">
+                <br>
+                <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
+                <br>
+                <a href="{{ url_for('auth.register') }}">Bạn chưa có tài khoản ?</a>
+                <br>
+                <button type="submit">Đăng nhập</button>
             </form>
             
         </div>
-    </section>
 </body>
 </html>

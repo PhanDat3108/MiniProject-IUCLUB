@@ -10,14 +10,14 @@
         <h2>Admin</h2>
         <ul>
             <li>
-                <a href="{{ url_for('manage_users') }}" class="active">Quản lý User</a>
+                <a href="{{ url_for('user.manage_users') }}" class="active">Quản lý User</a>
             </li>
             <li>
                 <a href="#">Quản lý Bài viết</a>
             </li>
         </ul>
         <hr>
-        <a href="{{ url_for('dashboard') }}">Về Dashboard</a>
+        <a href="{{ url_for('user.dashboard') }}">Về Dashboard</a>
     </div>
 
     <div class="main-content">
