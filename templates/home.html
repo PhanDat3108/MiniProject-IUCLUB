@@ -1,46 +1,87 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block title %}Trang chủ{% endblock %} {% block
+content %} {% if current_user %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/layout.css') }}"
+/>
 
-{% block title %}Trang chủ{% endblock %}
-
-{% block content %}
-    
-    {% if current_user %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
-    
-    <div class="post-form">
-        <h3>Đăng bài viết mới, {{ current_user.full_name }}!</h3>
-        <form action="{{ url_for('post.add_post_route') }}" method="POST" enctype="multipart/form-data">
-            <div>
-                <textarea id="caption" name="caption" rows="4" placeholder="Bạn đang nghĩ gì?"></textarea>
-            </div>
-            <div>
-                <label for="image">Tải lên ảnh (Tùy chọn):</label>
-                <input type="file" id="image" name="image" accept="image/*">
-            </div>
-            <br>
-            <button type="submit">Đăng bài</button>
-        </form>
+<div class="post-form">
+  <h3>Đăng bài viết mới, {{ current_user.full_name }}!</h3>
+  <form
+    action="{{ url_for('post.add_post_route') }}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <div>
+      <textarea
+        id="caption"
+        name="caption"
+        rows="4"
+        placeholder="Bạn đang nghĩ gì?"
+      ></textarea>
     </div>
-    <hr>
+    <div>
+      <label for="image">Tải lên ảnh (Tùy chọn):</label>
+      <input type="file" id="image" name="image" accept="image/*" />
+    </div>
+    <br />
+    <button type="submit">Đăng bài</button>
+  </form>
+</div>
+<hr />
+{% endif %}
+
+<h2>Bài đăng mới nhất</h2>
+<div class="post-list">
+  {% if posts %} {% for post in posts %}
+  <div class="post-item">
+    <strong class="post-author">@{{ post.full_name }}</strong>
+
+    <p class="post-caption">{{ post.caption }}</p>
+
+    {% if post.image_url %}
+    <img src="{{ post.image_url }}" alt="Post Image" />
     {% endif %}
 
-    <h2>Bài đăng mới nhất</h2>
-    <div class="post-list">
-        {% if posts %}
-            {% for post in posts %}
-                <div class="post-item">
-                    <strong class="post-author">@{{ post.full_name }}</strong>
-                    
-                    <p class="post-caption">{{ post.caption }}</p>
-                    
-                    {% if post.image_url %}
-                        <img src="{{ post.image_url }}" alt="Post Image">
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>Chưa có bài đăng nào. Hãy là người đầu tiên!</p>
-        {% endif %}
+    <!-- Nút tim -->
+    <form
+      action="{{url_for('post.like_post', post_id=post._id)}}"
+      method="POST"
+      style="margin-top: 10px"
+    >
+      <button type="submit" class="like-btn">❤️ ({{ post.likes }})</button>
+    </form>
+
+    <!-- Comment -->
+    <div style="margin-top: 15px">
+      <strong>Bình luận:</strong><br />
+
+      {% if post.comments %} {% for c in post.comments %}
+      <p><b>@{{c.full_name}}</b>: {{c.content}}</p>
+      {% endfor %} {% else %}
+      <p>Chưa có bình luận nào.</p>
+      {% endif %}
     </div>
+
+    <!--Form comment  -->
+    {% if current_user %}
+    <form
+      action="{{ url_for('post.comment_post', post_id=post._id)}}"
+      method="POST"
+    >
+      <input
+        type="text"
+        name="content"
+        placeholder="Viết bình luận..."
+        required
+      />
+      <button type="submit" class="comment-btn">Gửi</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %} {% else %}
+  <p>Chưa có bài đăng nào. Hãy là người đầu tiên!</p>
+  {% endif %}
+</div>
 
 {% endblock %}
