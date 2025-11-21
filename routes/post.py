@@ -8,6 +8,11 @@ from utils.decorators import admin_required
 
 from utils.post_utils import add_post, get_all_posts
 
+from bson.objectid import ObjectId
+from storage import posts_collection
+from datetime import datetime
+
+
 post_bp = Blueprint('post', __name__)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -54,3 +59,46 @@ def manage_posts():
     
     posts_list = get_all_posts()
     return render_template("admin_posts.html", posts=posts_list)
+    
+# Thêm nút tim
+@post_bp.route("/like/<post_id>", methods=["POST"])
+def like_post(post_id):
+    if "username" not in session:
+        flash("Bạn cần đăng nhập để like.", "warning")
+        return redirect(url_for("auth.login"))
+
+    posts_collection.update_one(
+        {"_id": ObjectId(post_id)},
+        {"$inc": {"likes": 1}}
+    )
+
+    return redirect(url_for("post.home"))
+
+# Thêm tính năng comment
+@post_bp.route("/comment/<post_id>", methods=["POST"])
+def comment_post(post_id):
+    if "username" not in session:
+        flash("Bạn cần đăng nhập để bình luận.", "warning")
+        return redirect(url_for("auth.login"))
+
+    content = request.form.get("content")
+    if not content:
+        flash("Bình luận không được để trống.", "warning")
+        return redirect(url_for("post.home"))
+
+    username = session.get("username")
+    full_name = session.get("full_name")
+
+    new_comment = {
+        "username": username,
+        "full_name": full_name,
+        "content": content,
+        "created_at": datetime.now()
+    }
+
+    posts_collection.update_one(
+        {"_id": ObjectId(post_id)},
+        {"$push": {"comments": new_comment}}
+    )
+
+    return redirect(url_for("post.home"))
