@@ -4,13 +4,16 @@ from datetime import datetime
 from functools import wraps
 from werkzeug.utils import secure_filename
 
+
+from bson.objectid import ObjectId
 from utils.user_utils import (
     add_user, 
     verify_user_credentials, 
     get_user_by_username, 
     get_all_users,
 )
-from utils.post_utils import add_post, get_all_posts
+
+from utils.post_utils import add_post, get_all_posts,posts_collection
 from storage import users_collection
 
 app = Flask(__name__)

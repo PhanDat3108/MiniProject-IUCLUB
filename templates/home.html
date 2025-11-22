@@ -5,6 +5,7 @@
 {% block content %}
     
     {% if current_user %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     
     <div class="post-form">
@@ -26,16 +27,51 @@
 
     <h2>Bài đăng mới nhất</h2>
     <div class="post-list">
+        <p style="color: red; font-size: 12px;">
+    Người đang xem: {{ current_user.username }} <br>
+    Chủ bài viết: {{ post.username }} <br>
+    Role: {{ current_user.role }}
+</p>
+
+{% if current_user.username == post.username ... %}
         {% if posts %}
             {% for post in posts %}
                 <div class="post-item">
-                    <strong class="post-author">@{{ post.full_name }}</strong>
+                    
+                    <div class="post-header">
+                        <strong class="post-author">@{{ post.full_name }}</strong>
+                        
+                        {% if current_user.username == post.username or current_user.role == 'admin' %}
+                        <div class="dropdown">
+                            <button type="button" onclick="togglePostMenu('menu-{{ post.id }}')" class="dropbtn">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                            
+                            <div id="menu-{{ post.id }}" class="dropdown-content">
+                                <a href="{{ url_for('edit_post_route', post_id=post.id) }}" class="dropdown-item">
+                                    <i class="fa-solid fa-pen"></i> Sửa bài
+                                </a>
+
+                                <form action="{{ url_for('delete_post_route', post_id=post.id) }}" 
+                                      method="POST" 
+                                      onsubmit="return confirm('Bạn có chắc muốn xoá bài viết này?');"
+                                      style="margin:0;">
+                                    <button type="submit" class="dropdown-item delete-item">
+                                        <i class="fa-solid fa-trash"></i> Xoá
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                     
                     <p class="post-caption">{{ post.caption }}</p>
                     
                     {% if post.image_url %}
-                        <img src="{{ post.image_url }}" alt="Post Image">
+                        <img src="{{ post.image_url }}" alt="Post Image" class="post-image">
                     {% endif %}
+                    
+                    <hr class="post-divider">
                 </div>
             {% endfor %}
         {% else %}
@@ -43,4 +79,45 @@
         {% endif %}
     </div>
 
+    <script>
+        function togglePostMenu(menuId) {
+            // Đóng các menu khác đang mở
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i].id !== menuId) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+            // Bật/tắt menu hiện tại
+            var menu = document.getElementById(menuId);
+            if (menu) {
+                menu.classList.toggle("show");
+            }
+        }
+
+        // Đóng menu khi click ra ngoài
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn') && !event.target.matches('.fa-ellipsis')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+        window.onclick = function(event) {
+            // Sửa logic click: Nếu click KHÔNG phải vào nút dropbtn VÀ KHÔNG phải vào icon bên trong nó
+            if (!event.target.closest('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 {% endblock %}
