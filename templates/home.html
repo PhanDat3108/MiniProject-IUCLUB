@@ -1,9 +1,7 @@
-{% extends "layout.html" %}
-
-{% block title %}Trang chủ{% endblock %}
+{% extends "layout.html" %} 
+{% block title %}Trang chủ{% endblock %} 
 
 {% block content %}
-    
     {% if current_user %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
@@ -22,37 +20,30 @@
             <button type="submit">Đăng bài</button>
         </form>
     </div>
-    <hr>
+    <hr />
     {% endif %}
 
     <h2>Bài đăng mới nhất</h2>
     <div class="post-list">
-        <p style="color: red; font-size: 12px;">
-    Người đang xem: {{ current_user.username }} <br>
-    Chủ bài viết: {{ post.username }} <br>
-    Role: {{ current_user.role }}
-</p>
-
-{% if current_user.username == post.username ... %}
         {% if posts %}
             {% for post in posts %}
                 <div class="post-item">
                     
-                    <div class="post-header">
+                    <div class="post-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <strong class="post-author">@{{ post.full_name }}</strong>
                         
-                        {% if current_user.username == post.username or current_user.role == 'admin' %}
-                        <div class="dropdown">
-                            <button type="button" onclick="togglePostMenu('menu-{{ post.id }}')" class="dropbtn">
+                        {% if current_user.is_authenticated and (current_user.username == post.username or current_user.role == 'admin') %}
+                        <div class="dropdown" style="position: relative; display: inline-block;">
+                            <button type="button" onclick="togglePostMenu('menu-{{ post._id }}')" class="dropbtn">
                                 <i class="fa-solid fa-ellipsis"></i>
                             </button>
                             
-                            <div id="menu-{{ post.id }}" class="dropdown-content">
-                                <a href="{{ url_for('edit_post_route', post_id=post.id) }}" class="dropdown-item">
+                            <div id="menu-{{ post._id }}" class="dropdown-content">
+                                <a href="{{ url_for('edit_post_route', post_id=post._id) }}" class="dropdown-item">
                                     <i class="fa-solid fa-pen"></i> Sửa bài
                                 </a>
 
-                                <form action="{{ url_for('delete_post_route', post_id=post.id) }}" 
+                                <form action="{{ url_for('delete_post_route', post_id=post._id) }}" 
                                       method="POST" 
                                       onsubmit="return confirm('Bạn có chắc muốn xoá bài viết này?');"
                                       style="margin:0;">
@@ -68,7 +59,29 @@
                     <p class="post-caption">{{ post.caption }}</p>
                     
                     {% if post.image_url %}
-                        <img src="{{ post.image_url }}" alt="Post Image" class="post-image">
+                        <img src="{{ post.image_url }}" alt="Post Image" class="post-image" style="max-width: 100%; margin-top: 10px;">
+                    {% endif %}
+                    
+                    <form action="{{url_for('post.like_post', post_id=post._id)}}" method="POST" style="margin-top: 10px">
+                        <button type="submit" class="like-btn">❤️ ({{ post.likes }})</button>
+                    </form>
+
+                    <div style="margin-top: 15px">
+                        <strong>Bình luận:</strong><br />
+                        {% if post.comments %} 
+                            {% for c in post.comments %}
+                                <p><b>@{{c.full_name}}</b>: {{c.content}}</p>
+                            {% endfor %} 
+                        {% else %}
+                            <p>Chưa có bình luận nào.</p>
+                        {% endif %}
+                    </div>
+
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('post.comment_post', post_id=post._id)}}" method="POST">
+                        <input type="text" name="content" placeholder="Viết bình luận..." required />
+                        <button type="submit" class="comment-btn">Gửi</button>
+                    </form>
                     {% endif %}
                     
                     <hr class="post-divider">
@@ -97,19 +110,7 @@
 
         // Đóng menu khi click ra ngoài
         window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn') && !event.target.matches('.fa-ellipsis')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-        window.onclick = function(event) {
-            // Sửa logic click: Nếu click KHÔNG phải vào nút dropbtn VÀ KHÔNG phải vào icon bên trong nó
-            if (!event.target.closest('.dropbtn')) {
+            if (!event.target.closest('.dropbtn') && !event.target.closest('.dropdown-content')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 for (var i = 0; i < dropdowns.length; i++) {
                     var openDropdown = dropdowns[i];
