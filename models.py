@@ -20,7 +20,7 @@ class User:
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 class Post:
-    def __init__(self, username, full_name, caption, image_url=None, created_at=None, _id=None):
+    def __init__(self, username, full_name, caption, image_url=None, created_at=None, _id=None, likes=0, comments=None):
         self._id = _id  
         self.username = username
         self.full_name = full_name
@@ -28,14 +28,20 @@ class Post:
         self.image_url = image_url
         self.created_at = created_at if created_at else datetime.now()
 
+        # Thêm nút like,comment
+        self.likes = likes
+        self.comments = comments if comments is not None else []
+
     def to_dict(self):
         data = {
             "username": self.username,
             "full_name": self.full_name,
             "caption": self.caption,
             "image_url": self.image_url,
-            "created_at": self.created_at
-        }
+            "created_at": self.created_at,
+            "likes": self.likes,
+            "comments": self.comments
+            }
 
         return data
 

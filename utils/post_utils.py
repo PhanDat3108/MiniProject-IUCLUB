@@ -23,7 +23,9 @@ def get_all_posts():
             caption=data["caption"],
             image_url=data.get("image_url"),
             created_at=data["created_at"],
-            _id=str(data["_id"]) 
+            _id=str(data["_id"]),
+            likes=data.get("likes",0),
+            comments=data.get("comments",[]) 
         )
         posts_list.append(post)
         
