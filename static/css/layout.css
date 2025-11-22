@@ -166,6 +166,75 @@ body {
   font-size: 18px;
 }
 .post-caption {
+    margin-top: 10px;
+    color: #111;
+}
+.post-header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.dropbtn:hover {
+    background-color: #f0f2f5; 
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 10;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.show {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    color: #333;
+    text-align: left;
+    width: 100%;
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+.delete-item {
+    color: #dc3545;
+}
+.delete-item:hover {
+    background-color: #ffeef0;
+}
   margin: 12px 0;
   color: #444;
   line-height: 1.4;

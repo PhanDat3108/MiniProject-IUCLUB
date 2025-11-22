@@ -2,6 +2,17 @@ import os
 from flask import Flask, session
 from utils.user_utils import get_user_by_username
 
+
+from bson.objectid import ObjectId
+from utils.user_utils import (
+    add_user, 
+    verify_user_credentials, 
+    get_user_by_username, 
+    get_all_users,
+)
+
+from utils.post_utils import add_post, get_all_posts,posts_collection
+from storage import users_collection
 from routes.auth import auth_bp
 from routes.user import user_bp
 from routes.post import post_bp
